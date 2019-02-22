@@ -150,6 +150,7 @@ var ExchangeTable = React.createClass({
            }
 		},
 		  error: function (jqXHR, exception) {
+		  console.log("kurcina");
         var msg = '';
         if (jqXHR.status === 0) {
             msg = 'Not connect.\n Verify Network.';
