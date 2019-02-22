@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Kursna lista</title>
+  <meta charset="UTF-8">  
+ <style>
+ 
+    .thClass {
+    position:absolute;
+    top:0;
+}
+      .naslovClass {
+            text-align: center;
+      }
+      
+    
+     .tabelaClass {
+         
+           max-height: 80vh;
+          overflow-y: scroll;
+     }
+      .konverzijaClass {
+            text-align: center;
+      }
+ </style> 
+</head>
+<body>
+	<div id = 'naslov' class = 'naslovClass'>
+	<h2>Kursna lista NBS</h2></div>
+    <div id='root' class = 'tabelaClass'></div>
+    <div id= 'konverzija' class='konverzijaClass'>
+    
+   <h3>Konverzija valute u RSD</h3>
+   <p> <label>Odaberite valutu:</label>
+    <select class="input" type="text" name="valuta" id="mySelect">
+    </select>
+     <label>Unesite iznos:</label>
+     <input id="inputFeet" type="number" placeholder="IZNOS" oninput="LengthConverter(this.value)" onchange="LengthConverter(this.value)">
+     <label>=</label><span id="outputRSD"></span><label>RSD</label>
+     </p>
+   </div>
+    <script>
+function LengthConverter(valNum) {
+	
+/*	 console.log("aaaaaa");
+	   var xhttp = new XMLHttpRequest();
+	  //  xhttp.open('GET', 'http://localhost:8100/currency-converter-feign/from/'+$('#mySelect option:selected').val()+'/to/RSD/quantity/'+valNum+'?callback=parseResponse');
+	  xhttp.open('GET', 'http://localhost:8000/currency-exchange/getListe');
+ 
+	  xhttp.setRequestHeader('Content-Type', 'application/json');
+	    xhttp.setRequestHeader('Access-Control-Allow-Origin','*');
+	    xhttp.send();
+	    console.log(xhttp.responseText);
+	    var response = JSON.parse(xhttp.responseText);
+	    console.log("bbbbbbbbb");
+	 */
+	    
+
+ document.getElementById("outputRSD").innerHTML=valNum*sessionStorage.getItem($('#mySelect option:selected').val())/sessionStorage.getItem($('#mySelect option:selected').val()+"1");
+}
+</script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://fb.me/react-15.0.1.js"></script>
+    <script src="https://fb.me/react-dom-15.0.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/babel">
+
+ 
+  var Exchange = React.createClass({
+  render: function() {
+    return (
+      <tr>
+        <td>{this.props.exchange.id}</td>
+        <td>{this.props.exchange.countryName}</td>
+        <td>{this.props.exchange.from}</td>
+        <td>{this.props.exchange.unit}</td>
+        <td>{this.props.exchange.conversionMultiple}</td>
+      </tr>);
+  }
+});
+var ExchangeTable = React.createClass({
+  render: function() {
+    var rows = [];
+    this.props.exchanges.forEach(function(exchange) {
+      rows.push(<Exchange exchange={exchange} />);
+    });
+    return (
+      <div className="container">
+  <table className="table table-striped">
+    <thead class="thClass">
+     <tr>
+        <th>Šifra valute</th>
+        <th>Naziv zemlje</th>
+        <th>Oznaka valute</th>
+        <th>Važi za</th>
+        <th>Srednji kurs</th>
+      </tr>
+    </thead>
+    <tbody>{rows}</tbody>
+  </table>
+</div>);
+  }
+});
+
+
+   var App = React.createClass({
+   
+   loadExchangeValuesFromServer: function () {
+
+    var self = this;
+	var countries = {};
+	var select = document.getElementById("mySelect");
+	
+
+       $.ajax({
+          'async': false,
+          'type': "GET",
+          'global': false,
+           crossDomain: true,
+          'dataType': 'json',
+          'url': "http://localhost:8000/currency-exchange/getList?callback=parseResponse",
+          'success': function (data) {
+                console.log(data);
+                console.log("uspelo");
+                self.setState({exchanges: data});
+				
+				for ( var item in data) {
+				 countries = data[item].from;
+
+                sessionStorage.setItem(data[item].from, data[item].conversionMultiple);
+                sessionStorage.setItem(data[item].from+"1", data[item].unit);
+                
+                
+                
+                
+
+				var option = document.createElement("OPTION"),
+					txt = document.createTextNode( data[item].from);
+
+
+				option.className = "dropdownlook";
+				option.appendChild(txt);
+				select.insertBefore(option,select.lastChild);
+
+               
+
+               
+           }
+		},
+		  error: function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        console.log(msg);
+console.log(jqXHR);
+console.log(exception);
+    },
+     });
+                
+},
+
+  getInitialState: function () {
+    return {exchanges: []};
+  },
+ 
+  componentDidMount: function () {
+    this.loadExchangeValuesFromServer();
+  },
+ 
+  render() {
+    return ( <ExchangeTable exchanges={this.state.exchanges}/> );
+  }
+});
+
+        ReactDOM.render(
+          <App />, document.getElementById('root')
+       );
+
+
+  </script>
+
+</body>
+</html>
