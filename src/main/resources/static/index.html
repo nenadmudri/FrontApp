@@ -120,7 +120,7 @@ var ExchangeTable = React.createClass({
           'global': false,
            crossDomain: true,
           'dataType': 'json',
-          'url': "http://middleware.kursna-lista.svc:8080/getExchangeRates?callback=parseResponse",
+          'url': "http://middleware-kursna-lista.router.default.svc.cluster.local/getExchangeRates?callback=parseResponse",
           'success': function (data) {
                 console.log(data);
                 console.log("uspelo");
