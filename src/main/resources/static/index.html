@@ -42,21 +42,38 @@
     <script>
 function LengthConverter(valNum) {
 	
-/*	 console.log("aaaaaa");
+ console.log("aaaaaa");
+		 
+		 if (valNum == null || valNum == 0) {
+			 
+			 console.log("nulaaaaa");
+			 document.getElementById("outputRSD").innerHTML='';
+		 }
+		 
+		 else {
+		 
 	   var xhttp = new XMLHttpRequest();
-	  //  xhttp.open('GET', 'http://localhost:8100/currency-converter-feign/from/'+$('#mySelect option:selected').val()+'/to/RSD/quantity/'+valNum+'?callback=parseResponse');
-	  xhttp.open('GET', 'http://localhost:8000/currency-exchange/getListe');
- 
-	  xhttp.setRequestHeader('Content-Type', 'application/json');
+	   xhttp.open('GET', 'http://middleware-kursna-lista.router.default.svc.cluster.local/getCurrencyConversion/from/'+$('#mySelect option:selected').val()+'/to/RSD/quantity/'+valNum+'?callback=parseResponse');
+	   xhttp.setRequestHeader('Content-Type', 'application/json');
 	    xhttp.setRequestHeader('Access-Control-Allow-Origin','*');
 	    xhttp.send();
-	    console.log(xhttp.responseText);
-	    var response = JSON.parse(xhttp.responseText);
-	    console.log("bbbbbbbbb");
-	 */
 	    
+	  
+	    xhttp.onreadystatechange = function() {
+	        if (xhttp.readyState == 4 && xhttp.status == 200) {
+	          console.log(xhttp.response);
+	          console.log(xhttp.responseText);
+	          console.log("bbbbbbbbb");
+	          document.getElementById("outputRSD").innerHTML=xhttp.responseText;
+	        }
+	      };
+	    console.log("ccccccc");
+	    
+		 }
+	
+	
 
- document.getElementById("outputRSD").innerHTML=valNum*sessionStorage.getItem($('#mySelect option:selected').val())/sessionStorage.getItem($('#mySelect option:selected').val()+"1");
+ //document.getElementById("outputRSD").innerHTML=valNum*sessionStorage.getItem($('#mySelect option:selected').val())/sessionStorage.getItem($('#mySelect option:selected').val()+"1");
 }
 </script>
     
